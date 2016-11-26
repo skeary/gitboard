@@ -8,7 +8,7 @@ const GithubErrorHandlerMixin = require('../mixins/github_error_handler')
 const TimeSelector = require('./TimeSelector');
 const CategorySelector = require('./CategorySelector');
 const MilestoneSelector = require('./MilestoneSelector');
-const AssigneeSelector = require('./MilestoneSelector');
+const AssigneeSelector = require('./AssigneeSelector');
 
 Marked.setOptions({
     sanitize: false,

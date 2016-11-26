@@ -2,6 +2,8 @@ const React = require('react');
 const Dropdown = require('./Dropdown');
 const Utils = require('../../utils');
 
+import { MenuItem } from 'react-bootstrap';
+
 var TimeSelector = React.createClass({
     render : function(){
         var choices = {
@@ -29,11 +31,11 @@ var TimeSelector = React.createClass({
 
         var timeLinks = Object.keys(choices).map(function(key){
             var title = choices[key];
-            return <a key={key} href="#" onClick={setTime.bind(this,key)}>{title}</a>;
+            return <MenuItem key={key} href="#" onClick={setTime.bind(this,key)}>{title}</MenuItem>;
         });
 
-        timeLinks.push(undefined);
-        timeLinks.push(<a href="#" onClick={setTime.bind(this,undefined)}>remove time</a>);
+        timeLinks.push(<MenuItem divider key="divider" />);
+        timeLinks.push(<MenuItem href="#" key="remove" onClick={setTime.bind(this,undefined)}> <i className="fa fa-trash" />&nbsp;&nbsp;remove time</MenuItem>);
         var minutes = this.props.issue["time"+(this.props.type == 'estimate' ? 'Estimate' : 'Spent')];
         var minutesStr = 'n/a';
         if (minutes)

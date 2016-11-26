@@ -2,6 +2,8 @@ const React = require('react');
 const Dropdown = require('./Dropdown');
 const Utils = require('../../utils');
 
+import { MenuItem } from 'react-bootstrap';
+
 var CategorySelector = React.createClass({
 
     render : function(){
@@ -23,7 +25,7 @@ var CategorySelector = React.createClass({
 
         var categoryLinks = Object.keys(categoryData).map(function(key){
             var params = categoryData[key];
-            return <a key={key} href="#" onClick={setCategory.bind(this,key)}>{params.title}</a>;
+            return <MenuItem key={key} href="#" onClick={setCategory.bind(this,key)}>{params.title}</MenuItem>;
         });
         return <Dropdown disabled={!Utils.isLoggedIn()} onClick={this.props.onClick} title={categoryData[category].title}>
             {categoryLinks}

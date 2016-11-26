@@ -138,6 +138,7 @@ var Board = React.createClass({
 
     afterLoadingSuccess : function(data){
         data.allIssues = data.openIssues.slice();
+        console.log(data.allIssues);
         Array.prototype.push.apply(data.allIssues,data.closedIssues);
         data.labelsByName = {};
         for(var i in data.labels){

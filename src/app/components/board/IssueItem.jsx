@@ -14,6 +14,7 @@ const IssueDetails = require('./IssueDetails');
 var IssueItem = React.createClass({
 
   showIssueDetails : function(e){
+    console.log('HERE');
       this.setState({showDetails : true});
       e.preventDefault();
   },
@@ -80,6 +81,7 @@ var IssueItem = React.createClass({
       }
       var modal;
       if (this.state.showDetails){
+        console.log('SHowing details');
           var resize = function(e){
               var maxHeight = $(window).height(); 
               var element = $('.modal-body');
@@ -113,7 +115,7 @@ var IssueItem = React.createClass({
                   onDragEnd={this.onDragEnd}
                   draggable={true}>
         {modal}                 
-        <Link to={this.props.baseUrl,{issueId : issue.number},this.props.params}>
+        <a href="#" onClick={this.showIssueDetails}>
           <div className="panel-heading">
           {issue.labels.map(
             label => <span key={label.name} className="issue-label" style={{borderBottom:'3px solid '+'#'+label.color}}>{label.name}</span>
@@ -126,7 +128,7 @@ var IssueItem = React.createClass({
           <div className="panel-footer">
               {this.renderTimeEstimate(issue)} {this.renderTimeSpent(issue)} &nbsp;
           </div>
-          </Link>
+          </a>
       </div>;
   }
 });
