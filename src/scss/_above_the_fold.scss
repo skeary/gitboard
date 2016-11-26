@@ -10,9 +10,9 @@
 @import "modules/border_radius";
 
 // Import partials
-@import "partials/request_indicator";
-@import "partials/sprintboard";
-@import "partials/milestones";
-@import "partials/organizations";
-@import "partials/repositories";
-@import "partials/modal";
+@import "./partials/request_indicator";
+@import "./partials/sprintboard";
+@import "./partials/milestones";
+@import "./partials/organizations";
+@import "./partials/repositories";
+@import "./partials/modal";

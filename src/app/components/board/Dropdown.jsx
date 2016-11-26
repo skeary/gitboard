@@ -14,7 +14,7 @@ var Dropdown = React.createClass({
             );
         } else {
           return (
-            <DropdownButton bsSize="xsmall" bsStyle="link" title={this.props.title} onSelect={this.props.onClick}>
+            <DropdownButton bsSize="xsmall" bsStyle="link" title={this.props.title} onClick={this.props.onClick}>
               {this.props.children}
             </DropdownButton>
           );

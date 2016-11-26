@@ -14,7 +14,6 @@ const IssueDetails = require('./IssueDetails');
 var IssueItem = React.createClass({
 
   showIssueDetails : function(e){
-    console.log('HERE');
       this.setState({showDetails : true});
       e.preventDefault();
   },
@@ -67,21 +66,30 @@ var IssueItem = React.createClass({
       return null;
   },
 
+  isSpecialLabel(labelName) {
+    const issueCategories = this.props.issueManager.issueCategories;
+    const categoryLabels = Object.keys(issueCategories).map(key => issueCategories[key].label);
+    if (categoryLabels.indexOf(labelName) != -1) {
+      return true;
+    }
+
+    if (labelName.startsWith('time-')) {
+      return true;
+    }
+    return false;
+  },
+
+
+
   render : function(){
       var assigneeInfo;
       var issue = this.props.issue;
       if (issue.assignee !== undefined && issue.assignee !== null)
           assigneeInfo = <img className="assignee" width="32" height="32" src={issue.assignee.avatar_url+'&s=32'} />;
-      var labelInfo = [];
-      issue.labels.sort(function(a,b){return a.name < b.name;});
-      for (var i in issue.labels){
-          var label = issue.labels[i];
-          labelInfo.push(<span className={"label-"+(parseInt(i)+1)} style={{background:'#'+label.color}}></span>);
-          labelInfo.push(' ');
-      }
+
       var modal;
+
       if (this.state.showDetails){
-        console.log('SHowing details');
           var resize = function(e){
               var maxHeight = $(window).height(); 
               var element = $('.modal-body');
@@ -117,7 +125,7 @@ var IssueItem = React.createClass({
         {modal}                 
         <a href="#" onClick={this.showIssueDetails}>
           <div className="panel-heading">
-          {issue.labels.map(
+          {issue.labels.filter(label => !this.isSpecialLabel(label.name)).map(
             label => <span key={label.name} className="issue-label" style={{borderBottom:'3px solid '+'#'+label.color}}>{label.name}</span>
           )}
               <p className="right-symbols"><span className="assignee">{assigneeInfo}</span></p>
