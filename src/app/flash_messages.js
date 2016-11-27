@@ -22,17 +22,16 @@ const Subject = require('./subject');
 
 
 
-var FlashMessages = function(){
-Subject.Subject.call(this);
-this.currentMessages = {};
-this.messageStream = [];
-this.messageCount = 0;
+var FlashMessages = function () {
+  Subject.Subject.call(this);
+  this.currentMessages = {};
+  this.messageStream = [];
+  this.messageCount = 0;
 };
 
 var instance;
 
-function getInstance()
-{
+function getInstance() {
   if (instance === undefined)
     instance = new FlashMessages();
   return instance;
@@ -41,15 +40,15 @@ function getInstance()
 FlashMessages.prototype = new Subject.Subject();
 FlashMessages.prototype.constructor = FlashMessages;
 
-FlashMessages.prototype.postMessage = function(data){
+FlashMessages.prototype.postMessage = function (data) {
   var messageId = this.messageCount;
   this.messageCount++;
-  var messageData = {id: messageId,data : data,receivedAt : new Date()};
+  var messageData = { id: messageId, data: data, receivedAt: new Date() };
   if (messageData.duration === undefined)
-      messageData.duration = 2500;
+    messageData.duration = 2500;
   this.currentMessages[messageId] = messageData;
   this.messageStream.push(messageId);
-  this.notify("newMessage",messageData);
+  this.notify("newMessage", messageData);
   return messageId;
 }
 

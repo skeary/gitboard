@@ -37,19 +37,19 @@ import { Link } from 'react-router';
 
 var MilestoneItem = React.createClass({
 
-  render : function(){
+  render: function () {
     var due;
-    if (this.props.milestone.due_on !== null){
+    if (this.props.milestone.due_on !== null) {
       var datestring = Moment(new Date(this.props.milestone.due_on)).fromNow();
-      due = [<i className="octicon octicon-clock" />,' ',datestring];
+      due = [<i className="octicon octicon-clock" />, ' ', datestring];
     }
     return <div className="col-md-3">
       <div className="panel panel-primary milestone-item">
-        <Link to={"/sprintboard/"+this.props.repository.full_name+"/"+this.props.milestone.number}>
+        <Link to={"/sprintboard/" + this.props.repository.full_name + "/" + this.props.milestone.number}>
           <div className="panel-body">
             <h4>{this.props.milestone.title}</h4>
-            <span className="label label-danger">{this.props.milestone.open_issues} open</span>&nbsp;
-            <span className="label label-success">{this.props.milestone.closed_issues} closed</span>
+            <span className="label label-danger">{this.props.milestone.open_issues}open</span>&nbsp;
+            <span className="label label-success">{this.props.milestone.closed_issues}closed</span>
             <span className="pull-right">{due}</span>
           </div>
         </Link>
@@ -60,33 +60,33 @@ var MilestoneItem = React.createClass({
 
 var Milestones = React.createClass({
 
-  mixins : [LoaderMixin,GithubErrorHandlerMixin],
+  mixins: [LoaderMixin, GithubErrorHandlerMixin],
 
-  resources : function(props) {
+  resources: function (props) {
     console.log(props);
     const repositoryId = `${props.params.repositoryOwner}/${props.params.repositoryName}`;
     return [
       {
-        name : 'repository',
-        endpoint : this.apis.repository.getDetails,
-        params : [repositoryId,{}],
-        success : function(data){
-          return {repository : data};
+        name: 'repository',
+        endpoint: this.apis.repository.getDetails,
+        params: [repositoryId, {}],
+        success: function (data) {
+          return { repository: data };
         }.bind(this)
       },
       {
-        name : 'milestones',
-        endpoint : this.apis.milestone.getMilestones,
-        params : [repositoryId,{per_page : 100}],
-        success : function(data,xhr){
+        name: 'milestones',
+        endpoint: this.apis.milestone.getMilestones,
+        params: [repositoryId, { per_page: 100 }],
+        success: function (data, xhr) {
           var arr = [];
-          for(var i in data) {
-            if(data.hasOwnProperty(i) && !isNaN(+i)) {
+          for (var i in data) {
+            if (data.hasOwnProperty(i) && !isNaN(+i)) {
               arr[+i] = data[i];
+            }
           }
-        }
-          return {milestones : arr};
-      }.bind(this)
+          return { milestones: arr };
+        }.bind(this)
       }
     ];
   },
@@ -96,7 +96,7 @@ var Milestones = React.createClass({
   render: function () {
     var data = this.state.data;
 
-    var milestoneItems = data.milestones.map(function(milestone){
+    var milestoneItems = data.milestones.map(function (milestone) {
       return <MilestoneItem key={milestone.number} milestone={milestone} repository={data.repository} />;
     }.bind(this))
 
@@ -114,7 +114,7 @@ var Milestones = React.createClass({
       </div>
       <div className="row">
         <div className="col-md-12">
-          <Link to={'/sprintboard/'+data.repository.full_name}>show issues without a milestone</Link>
+          <Link to={'/sprintboard/' + data.repository.full_name}>show issues without a milestone</Link>
         </div>
       </div>
     </div>;

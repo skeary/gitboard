@@ -33,38 +33,38 @@ const FlashMessagesService = require('../../flash_messages');
 
 var Logout = React.createClass({
 
-    displayName: "LogoutComponent",
+  displayName: "LogoutComponent",
 
 
-    componentWillMount : function(){
-        Utils.logout();
-    },
+  componentWillMount: function () {
+    Utils.logout();
+  },
 
-    render: function () {
+  render: function () {
 
-        var statusMessage;
+    var statusMessage;
 
-        return <div className="container">
-                    <div className="row">
-                        &nbsp;
+    return <div className="container">
+      <div className="row">
+        &nbsp;
                     </div>
-                    <div className="row">
-                        <div className="col-xs-4 col-xs-offset-4">
-                            <div className="well bs-component">
-                                <h3>You have been logged out</h3>
-                                <div className="panel panel-default">
-                                    <div className="panel-heading">
-                                        <h5>Security notice</h5>
-                                    </div>
-                                    <div className="panel-body">
-                                        <p>We cannot delete your authorization from Github without your username and password. If you want to delete it, you can do so manually <a href="https://github.com/settings/tokens">here</a> (look for the <strong>gitboard</strong> token)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    },
+      <div className="row">
+        <div className="col-xs-4 col-xs-offset-4">
+          <div className="well bs-component">
+            <h3>You have been logged out</h3>
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <h5>Security notice</h5>
+              </div>
+              <div className="panel-body">
+                <p>We cannot delete your authorization from Github without your username and password. If you want to delete it, you can do so manually <a href="https://github.com/settings/tokens">here</a> (look for the <strong>gitboard</strong> token)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  },
 
 });
 

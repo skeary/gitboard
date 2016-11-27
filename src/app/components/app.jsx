@@ -37,9 +37,9 @@ var MainApp = React.createClass({
 
   displayName: 'MainApp',
 
-  componentDidMount : function(){
+  componentDidMount: function () {
 
-    if (Utils.isLoggedIn()){
+    if (Utils.isLoggedIn()) {
       $(".navbar-brand").attr("href", "#/repositories");
     }
 
@@ -58,4 +58,4 @@ var MainApp = React.createClass({
   }
 });
 
-module.exports =  MainApp;
+module.exports = MainApp;

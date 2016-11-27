@@ -22,77 +22,76 @@ const Subject = require('../../subject');
 const Settings = require('../../settings');
 
 
-var LabelApi = function(){
-    Subject.Subject.call(this);
+var LabelApi = function () {
+  Subject.Subject.call(this);
 };
 
 var instance;
 
-function getInstance()
-{
-    if (instance === undefined)
-        instance = new LabelApi();
-    return instance;
+function getInstance() {
+  if (instance === undefined)
+    instance = new LabelApi();
+  return instance;
 }
 
 LabelApi.prototype = new Subject.Subject();
 LabelApi.prototype.constructor = LabelApi;
 
-LabelApi.prototype.getRepositoryLabels = function(fullName,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/repos/"+fullName+"/labels"+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+LabelApi.prototype.getRepositoryLabels = function (fullName, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/repos/" + fullName + "/labels" + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-LabelApi.prototype.getIssueLabels = function(fullName,issueNumber,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/repos/"+fullName+"/issues/"+issueNumber+"/labels"+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+LabelApi.prototype.getIssueLabels = function (fullName, issueNumber, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/repos/" + fullName + "/issues/" + issueNumber + "/labels" + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-LabelApi.prototype.removeLabel = function(fullName,issueNumber,labelName,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'DELETE',
-        url : "/repos/"+fullName+"/issues/"+issueNumber+"/labels/"+labelName,
-        success : onSuccess,
-        error: onError,
-        },{});
+LabelApi.prototype.removeLabel = function (fullName, issueNumber, labelName, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'DELETE',
+    url: "/repos/" + fullName + "/issues/" + issueNumber + "/labels/" + labelName,
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-LabelApi.prototype.createLabel = function(fullName,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'POST',
-        url : "/repos/"+fullName+"/labels",
-        data: JSON.stringify(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+LabelApi.prototype.createLabel = function (fullName, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'POST',
+    url: "/repos/" + fullName + "/labels",
+    data: JSON.stringify(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-LabelApi.prototype.addLabels = function(fullName,issueNumber,labelNames,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'POST',
-        url : "/repos/"+fullName+"/issues/"+issueNumber+"/labels",
-        success : onSuccess,
-        data : JSON.stringify(labelNames),
-        error: onError,
-        },{});
+LabelApi.prototype.addLabels = function (fullName, issueNumber, labelNames, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'POST',
+    url: "/repos/" + fullName + "/issues/" + issueNumber + "/labels",
+    success: onSuccess,
+    data: JSON.stringify(labelNames),
+    error: onError,
+  }, {});
 }
 
-LabelApi.prototype.getDetails = function(fullName,labelNumber,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/repos/"+fullName+"/labels/"+labelNumber+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+LabelApi.prototype.getDetails = function (fullName, labelNumber, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/repos/" + fullName + "/labels/" + labelNumber + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-module.exports = {getInstance:getInstance};
+module.exports = { getInstance: getInstance };
 

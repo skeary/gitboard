@@ -22,38 +22,37 @@ const Subject = require('../../subject');
 const Settings = require('../../settings');
 
 
-var RepositoryApi = function(type){
-    Subject.Subject.call(this);
+var RepositoryApi = function (type) {
+  Subject.Subject.call(this);
 };
 
 var instance;
 
-function getInstance()
-{
-    if (instance === undefined)
-        instance = new RepositoryApi();
-    return instance;
+function getInstance() {
+  if (instance === undefined)
+    instance = new RepositoryApi();
+  return instance;
 }
 
 RepositoryApi.prototype = new Subject.Subject();
 RepositoryApi.prototype.constructor = RepositoryApi;
 
-RepositoryApi.prototype.getDetails = function(fullName,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/repos/"+fullName+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+RepositoryApi.prototype.getDetails = function (fullName, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/repos/" + fullName + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-RepositoryApi.prototype.getCollaborators = function(fullName,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/repos/"+fullName+'/collaborators?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+RepositoryApi.prototype.getCollaborators = function (fullName, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/repos/" + fullName + '/collaborators?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-module.exports = {getInstance:getInstance};
+module.exports = { getInstance: getInstance };

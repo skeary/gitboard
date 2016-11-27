@@ -17,8 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 var settings = {
-    frontendUrl : '',
-    html5history : true,
+    frontendUrl: '',
+    html5history: true,
 };
 module.exports = settings;
 

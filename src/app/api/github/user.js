@@ -22,48 +22,47 @@ const Settings = require('../../settings');
 
 
 
-var UserApi = function(){
-    Subject.Subject.call(this);
+var UserApi = function () {
+  Subject.Subject.call(this);
 };
 
 var instance;
 
-function getInstance()
-{
-    if (instance === undefined)
-        instance = new UserApi();
-    return instance;
+function getInstance() {
+  if (instance === undefined)
+    instance = new UserApi();
+  return instance;
 }
 
 UserApi.prototype = new Subject.Subject();
 UserApi.prototype.constructor = UserApi;
 
-UserApi.prototype.getRepositories = function(data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/user/repos"+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+UserApi.prototype.getRepositories = function (data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/user/repos" + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-UserApi.prototype.getUserRepositories = function(username,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/users/"+username+"/repos"+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+UserApi.prototype.getUserRepositories = function (username, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/users/" + username + "/repos" + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-UserApi.prototype.getProfile = function(onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/user",
-        success : onSuccess,
-        error: onError
-        });
+UserApi.prototype.getProfile = function (onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/user",
+    success: onSuccess,
+    error: onError
+  });
 }
 
-module.exports = {getInstance:getInstance};
+module.exports = { getInstance: getInstance };
 

@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 var settings = {
-    frontendUrl : '',
-    html5history : false,
+    frontendUrl: '',
+    html5history: false,
 };
 module.exports = settings;
 

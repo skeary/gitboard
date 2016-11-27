@@ -5,8 +5,6 @@
 /*jshint newcap:false */
 /*global React, Router*/
 
-'use strict';
-
 
 const React = require('react');
 const $ = require('jquery');
@@ -18,30 +16,30 @@ var BootstrapModal = React.createClass({
   // integrate with Bootstrap or jQuery!
   displayName: 'BootstrapModal',
 
-  close: function() {
-    this.setState({hidden : true});
+  close: function () {
+    this.setState({ hidden: true });
   },
 
-  open: function() {
-    this.setState({hidden : false});
+  open: function () {
+    this.setState({ hidden: false });
   },
 
-  getInitialState : function(){
-    return {hidden : this.props.hidden !== undefined ? this.props.hidden : true}
+  getInitialState: function () {
+    return { hidden: this.props.hidden !== undefined ? this.props.hidden : true }
   },
 
-  getDefaultProps : function(){
-    return {closable : true,disabled : false,raw : false};
+  getDefaultProps: function () {
+    return { closable: true, disabled: false, raw: false };
   },
 
-  componentWillReceiveProps : function(props){
+  componentWillReceiveProps: function (props) {
     if (props.hidden && props.hidden != this.state.hidden)
-        this.setState({hidden : props.hidden});
+      this.setState({ hidden: props.hidden });
   },
 
-  render: function() {
+  render: function () {
     if (this.state.hidden)
-        return <div ref="modal"/>;
+      return <div ref="modal" />;
 
     var confirmButton;
     var cancelButton;
@@ -59,13 +57,13 @@ var BootstrapModal = React.createClass({
 
     var closeButton;
 
-    if (this.props.closable){
+    if (this.props.closable) {
       closeButton = <button
         type="button"
         className="close pull-right"
         disabled={this.props.disabled}
         onClick={this.handleCancel}>
-          <i className="fa fa-times" />
+        <i className="fa fa-times" />
       </button>
     }
 
@@ -79,7 +77,7 @@ var BootstrapModal = React.createClass({
 
     var footer;
 
-    if ((this.props.onCancel || this.props.onConfirm) && !this.props.raw){
+    if ((this.props.onCancel || this.props.onConfirm) && !this.props.raw) {
       footer = <div className="modal-footer">
         {cancelButton}
         {confirmButton}
@@ -88,37 +86,37 @@ var BootstrapModal = React.createClass({
     var content;
 
     if (this.props.getContent)
-        content = this.props.getContent();
+      content = this.props.getContent();
     else
-        content = this.props.children;
+      content = this.props.children;
 
     if (!this.props.raw)
-        content = [<div className="modal-body">{content}</div>,footer]
+      content = [<div className="modal-body">{content}</div>, footer]
 
     return (
       <div className="modal show" ref="modal">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              
+
               <h3>{this.props.title}{closeButton}</h3>
             </div>
             {content}
           </div>
         </div>
-        <div className="modal-backdrop in" onClick={this.props.closable ? this.handleCancel : function(e){e.preventDefault();}}></div>
+        <div className="modal-backdrop in" onClick={this.props.closable ? this.handleCancel : function (e) { e.preventDefault(); } }></div>
       </div>
     );
   },
 
-  handleCancel: function(e) {
+  handleCancel: function (e) {
     if (this.props.onCancel)
       this.props.onCancel(e);
     e.preventDefault();
     this.close();
   },
 
-  handleConfirm: function(e) {
+  handleConfirm: function (e) {
     if (this.props.onConfirm)
       this.props.onConfirm(e);
     e.preventDefault();

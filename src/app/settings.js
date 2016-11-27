@@ -23,11 +23,11 @@ const $ = require('jquery');
 const envSettings = {};
 
 var settings = {
-    scopes: ['read:org','repo'],
-    source : 'https://api.github.com',
-    useCache : true,
-    cacheValidity : 3600*24, //cache expires after 24 hours
-    cacheRefreshLimit  : 0.0, //how long until we fetch the new value of something?
+  scopes: ['read:org', 'repo'],
+  source: 'https://api.github.com',
+  useCache: true,
+  cacheValidity: 3600 * 24, //cache expires after 24 hours
+  cacheRefreshLimit: 0.0, //how long until we fetch the new value of something?
 };
 
 module.exports = {

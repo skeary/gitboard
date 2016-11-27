@@ -17,38 +17,39 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function Subject(){
-    this.observers = [];
+function Subject() {
+  this.observers = [];
 }
 
 Subject.prototype = {
-    subscribe : function (callback) {
+  subscribe: function (callback) {
     this.observers.push(callback);
-    },
-    unsubscribe : function(callback) {
-        var new_observers = [];
-        for (var i in this.observers)
-        {
-            if (this.observers[i] !== callback)
-                new_observers.push(this.observers[i]);
-        }
-        this.observers = new_observers;
-    },
-    notify : function(property,data) {
-        var new_observers = [];
-        this.observers.forEach(function (cb) {
-            try {
-                cb(this,property,data);
-                new_observers.push(cb);
-            }
-            catch(e){throw e;
-            }}.bind(this)
-            );        
-        this.observers = new_observers;
+  },
+  unsubscribe: function (callback) {
+    var new_observers = [];
+    for (var i in this.observers) {
+      if (this.observers[i] !== callback)
+        new_observers.push(this.observers[i]);
     }
+    this.observers = new_observers;
+  },
+  notify: function (property, data) {
+    var new_observers = [];
+    this.observers.forEach(function (cb) {
+      try {
+        cb(this, property, data);
+        new_observers.push(cb);
+      }
+      catch (e) {
+        throw e;
+      }
+    }.bind(this)
+    );
+    this.observers = new_observers;
+  }
 }
 
 module.exports = {
-  Subject : Subject
+  Subject: Subject
 };
 

@@ -21,50 +21,49 @@ const Utils = require('../../utils');
 const Subject = require('../../subject');
 const Settings = require('../../settings');
 
-var OrganizationApi = function(type){
-    Subject.Subject.call(this);
+var OrganizationApi = function (type) {
+  Subject.Subject.call(this);
 };
 
 var instance;
 
-function getInstance()
-{
-    if (instance === undefined)
-        instance = new OrganizationApi();
-    return instance;
+function getInstance() {
+  if (instance === undefined)
+    instance = new OrganizationApi();
+  return instance;
 }
 
 OrganizationApi.prototype = new Subject.Subject();
 OrganizationApi.prototype.constructor = OrganizationApi;
 
-OrganizationApi.prototype.getOrganizations = function(data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/user/orgs"+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+OrganizationApi.prototype.getOrganizations = function (data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/user/orgs" + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-OrganizationApi.prototype.getRepositories = function(owner,data,onSuccess,onError){
-    console.log("Getting repositories for organization "+owner)
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/orgs/"+owner+"/repos"+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+OrganizationApi.prototype.getRepositories = function (owner, data, onSuccess, onError) {
+  console.log("Getting repositories for organization " + owner)
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/orgs/" + owner + "/repos" + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-OrganizationApi.prototype.getDetails = function(name,data,onSuccess,onError){
-    return Utils.apiRequest({
-        type : 'GET',
-        url : "/orgs/"+name+'?'+Utils.toUrlParams(data),
-        success : onSuccess,
-        error: onError,
-        },{});
+OrganizationApi.prototype.getDetails = function (name, data, onSuccess, onError) {
+  return Utils.apiRequest({
+    type: 'GET',
+    url: "/orgs/" + name + '?' + Utils.toUrlParams(data),
+    success: onSuccess,
+    error: onError,
+  }, {});
 }
 
-module.exports = {getInstance:getInstance};
+module.exports = { getInstance: getInstance };
 
 

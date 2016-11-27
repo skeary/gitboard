@@ -35,64 +35,64 @@ const GithubErrorHandlerMixin = require('./mixins/github_error_handler');
 
 var OrganizationItem = React.createClass({
 
-  render : function(){
+  render: function () {
     console.log(this.props.organization);
     var description;
     if (this.props.organization.description)
-        description = <p>{this.props.organization.description}</p>;
+      description = <p>{this.props.organization.description}</p>;
     else
-        description = <p>no description available</p>;
+      description = <p>no description available</p>;
     return <div className="col-md-3"><div className="panel panel-primary organization-item">
-      <img className="avatar" width="64" height="64" src={this.props.organization.avatar_url+'&s=64'} />
-      <A href={Utils.makeUrl("/repositories/"+this.props.organization.login)}>
+      <img className="avatar" width="64" height="64" src={this.props.organization.avatar_url + '&s=64'} />
+      <A href={Utils.makeUrl("/repositories/" + this.props.organization.login)}>
         <div className="panel-body">
-            <h4>{this.props.organization.login}</h4>
-            {description}
+          <h4>{this.props.organization.login}</h4>
+          {description}
         </div>
-        </A>
+      </A>
     </div></div>;
   }
 });
 
 var Organizations = React.createClass({
 
-    mixins : [LoaderMixin,GithubErrorHandlerMixin],
+  mixins: [LoaderMixin, GithubErrorHandlerMixin],
 
-    resources : function(props){
-        return [{
-            name : 'organizations',
-            endpoint : this.apis.organization.getOrganizations,
-            params : [{per_page : 100}],
-            success : function(data,xhr){
-                var arr = [];
-                for(var i in data) {
-                    if(data.hasOwnProperty(i) && !isNaN(+i)) {
-                        arr[+i] = data[i];
-                    }
-                }
-                this.setState({organizations : arr});
-            }.bind(this)
-        }];
-    },
+  resources: function (props) {
+    return [{
+      name: 'organizations',
+      endpoint: this.apis.organization.getOrganizations,
+      params: [{ per_page: 100 }],
+      success: function (data, xhr) {
+        var arr = [];
+        for (var i in data) {
+          if (data.hasOwnProperty(i) && !isNaN(+i)) {
+            arr[+i] = data[i];
+          }
+        }
+        this.setState({ organizations: arr });
+      }.bind(this)
+    }];
+  },
 
-    displayName: 'Organizations',
+  displayName: 'Organizations',
 
-    render: function () {
-        var organizationItems = this.state.organizations.map(function(organization){
-            return <OrganizationItem organization={organization} />;
-        }.bind(this))
+  render: function () {
+    var organizationItems = this.state.organizations.map(function (organization) {
+      return <OrganizationItem organization={organization} />;
+    }.bind(this))
 
-        return <div className="container">
-            <div className="row">
-                <div className="col-md-12">
-                <h3>Your organizations</h3>
-                </div>
-            </div>
-            <div className="row">
-                {organizationItems}
-            </div>
-        </div>;
-    }
+    return <div className="container">
+      <div className="row">
+        <div className="col-md-12">
+          <h3>Your organizations</h3>
+        </div>
+      </div>
+      <div className="row">
+        {organizationItems}
+      </div>
+    </div>;
+  }
 });
 
 module.exports = Organizations;

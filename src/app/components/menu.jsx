@@ -29,52 +29,52 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 const React = require('react');
 
+import { Link } from 'react-router';
+
 const Utils = require('../utils');
 const UserApi = require('../api/github/user');
 const FlashMessages = require('./generic/flash_messages');
 const LoaderMixin = require('./mixins/loader');
 
-const A = require('./generic/a');
-
 
 var Menu = React.createClass({
 
-  mixins : [LoaderMixin],
+  mixins: [LoaderMixin],
 
-  resources : function(props){
+  resources: function (props) {
 
-    var logout  = function(){
+    var logout = function () {
       Utils.logout();
       Utils.redirectTo(Utils.makeUrl('/login'));
     };
-    
-    if (Utils.isLoggedIn()){
+
+    if (Utils.isLoggedIn()) {
       return [
-      {
-        name : 'user',
-        endpoint : this.apis.user.getProfile,
-        nonBlocking : true,
-        nonCritical : true,
-        error : logout
-      }
+        {
+          name: 'user',
+          endpoint: this.apis.user.getProfile,
+          nonBlocking: true,
+          nonCritical: true,
+          error: logout
+        }
       ];
     }
     return [];
   },
 
-  silentLoading : true,
+  silentLoading: true,
   displayName: 'Menu',
 
   getInitialState: function () {
-      return {user: {admin: false}, project: {roles: {admin: []}}};
+    return { user: { admin: false }, project: { roles: { admin: [] } } };
   },
 
-  getDefaultProps : function (){
-      return {};
+  getDefaultProps: function () {
+    return {};
   },
 
-  componentWillMount : function(){
-      this.userApi = UserApi.getInstance();
+  componentWillMount: function () {
+    this.userApi = UserApi.getInstance();
   },
 
   render: function () {
@@ -87,27 +87,27 @@ var Menu = React.createClass({
     flashMessagesMenu = undefined;  /* quick switch to activate or deactivate */
 
     var menu;
-    if (Utils.isLoggedIn()){
+    if (Utils.isLoggedIn()) {
       menu = [<ul className="nav navbar-nav">
-        <li><A href={Utils.makeUrl("/repositories")}>Your Repositories</A></li>
-        <li><A href={Utils.makeUrl("/organizations")}>Your Organizations</A></li>
+        <li><Link to="/repositories">Your Repositories</Link></li>
+        <li><Link to="/organizations">Your Organizations</Link></li>
       </ul>,
       <ul className="nav navbar-nav navbar-right">
         {projectMenu}
-        <li><A href={Utils.makeUrl("/logout")}>Logout</A></li>
+        <li><Link to="/logout">Logout</Link></li>
       </ul>];
     }
-    else{
+    else {
       menu = [<ul key="item1" className="nav navbar-nav">
       </ul>,
       <ul key="item2" className="nav navbar-nav navbar-right">
-        <li><A href={Utils.makeUrl("/login")}>Login</A></li>
+        <li><Link to="/login">Login</Link></li>
         {flashMessagesMenu}
       </ul>];
     }
     return <div ref="navMain" id="nav-main" className="nav-collapse">
-            {menu}
-        </div>;
+      {menu}
+    </div>;
   }
 });
 
