@@ -24,6 +24,7 @@ const RepositoryApi = require('./github/repository');
 const MilestoneApi = require('./github/milestone');
 const OrganizationApi = require('./github/organization');
 const LabelApi = require('./github/label');
+const BoardConfigApi = require('./github/board_config');
 
 module.exports = {
   authorization : AuthorizationApi.getInstance(),
@@ -32,5 +33,6 @@ module.exports = {
   repository : RepositoryApi.getInstance(),
   milestone : MilestoneApi.getInstance(),
   organization : OrganizationApi.getInstance(),
-  label : LabelApi.getInstance()
+  label : LabelApi.getInstance(),
+  boardConfig : BoardConfigApi.getInstance()
 };

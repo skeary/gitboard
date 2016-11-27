@@ -25,6 +25,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 const React = require('react');
+
+import { Link, withRouter } from 'react-router';
+
 const settings = require('../../settings');
 const Utils = require('../../utils');
 const AuthorizationApi = require('../../api/github/authorization');
@@ -35,11 +38,7 @@ const TabsMixin = require('../mixins/tabs');
 const FlashMessagesService = require('../../flash_messages');
 
 
-console.log('llllllllllllllll');
-console.log(settings);
-console.log('llllllllllllllll');
-
-var Login = React.createClass({
+var Login = withRouter(React.createClass({
 
   displayName: 'Login',
 
@@ -51,26 +50,26 @@ var Login = React.createClass({
       {
         name: 'password',
         title: 'Password Login',
-        href: Utils.makeUrl(this.props.baseUrl,
-          { tab: 'password' },
-          this.props.params),
-        content: <PasswordLogin params={this.props.params}
+        href: '/login/password',
+        content: <PasswordLogin params={this.props.params} router={this.props.router}
           baseUrl={this.props.baseUrl}
           data={this.props.data} />
       },
       {
         name: 'accessToken',
         title: 'Access Token Login',
-        href: Utils.makeUrl(this.props.baseUrl,
-          { tab: 'accessToken' },
-          this.props.params),
-        content: <AccessTokenLogin params={this.props.params}
+        href: '/login/accessToken',
+        content: <AccessTokenLogin params={this.props.params} router={this.props.router}
           baseUrl={this.props.baseUrl}
           data={this.props.data} />
       },
     ];
 
-    this.setupTabs(tabs, 'accessToken');
+    if (this.props.params.loginType) {
+      this.setupTabs(tabs, this.props.params.loginType);      
+    } else {
+      this.setupTabs(tabs, 'password');
+    }
 
     return <div className="container">
       <div className="row">
@@ -85,7 +84,7 @@ var Login = React.createClass({
     </div>;
   },
 
-});
+}));
 
 var AccessTokenLogin = React.createClass({
 
@@ -121,7 +120,7 @@ var AccessTokenLogin = React.createClass({
           onChange={this.setter('accessToken')}
           id="accessToken"
           className="form-control"
-          placeholder="Github Access Token" autofocus />
+          placeholder="Github Access Token" autoFocus />
         <div className="form-control">
           <label htmlFor="remember_me"><input type="checkbox" checked={this.state.rememberMe == '1' ? true : false} value="1" onChange={function (e) { e.target.checked ? this.setState({ rememberMe: true }) : this.setState({ rememberMe: false }); }.bind(this)} id="remember_me" /> Remember me</label>
         </div>
@@ -164,7 +163,7 @@ var AccessTokenLogin = React.createClass({
       return;
 
     var onSuccess = function (data) {
-      Utils.redirectTo("/");
+      this.props.router.replace('/');
     }.bind(this);
 
     var onError = function () {
@@ -258,7 +257,7 @@ var PasswordLogin = React.createClass({
                         </p>
           <p>
             If you do not feel comfortable entering your Github credentials (and we do not blame you for it),
-                            you can also log in by <strong>providing an <A href={Utils.makeUrl(this.props.baseUrl, { tab: 'accessToken' })}>access token</A></strong>.
+                            you can also log in by <strong>providing an <Link to="/login/accessToken">access token</Link></strong>.
                         </p>
         </div>
       </div>
@@ -288,7 +287,7 @@ var PasswordLogin = React.createClass({
 
     var onSuccess = function (data) {
       Utils.login(data.token, this.state.rememberMe);
-      Utils.redirectTo(Utils.makeUrl("/"));
+      this.props.router.replace('/');
     }.bind(this);
 
     var description = 'Gitboard Access Token - ' + navigator.userAgent;

@@ -39,7 +39,7 @@ const IssueManager = require('../../helpers/issue_manager');
 
 const IssueItem = require('./IssueItem');
 const IssueList = require('./IssueList');
-
+const RemainingIssueProgressTracker = require('./RemainingIssueProgressTracker');
 
 
 
@@ -62,6 +62,28 @@ var Board = React.createClass({
       }
       return arr;
     }
+
+    var convertToConfig = function(data) {
+      const defaultSettings = {
+        timeTracking: {
+          remaining: {
+            include: false
+          }
+        }
+      };
+      let configSettings = {};
+
+      if (data.encoding === 'base64') {
+        try {
+          configSettings = JSON.parse(atob(data.content));
+        }
+        catch (err) {
+        }
+      }
+      //configSettings.timeTracking.remaining.include = false;
+      return { ...defaultSettings, ...configSettings };
+    }
+
     const repositoryId = `${props.params.repositoryOwner}/${props.params.repositoryName}`;
 
     const r = [
@@ -102,6 +124,15 @@ var Board = React.createClass({
           }
           return { closedIssues: arr };
         },
+      },
+      {
+        name: 'boardConfig',
+        endpoint: this.apis.boardConfig.getBoardConfig,
+        params: [repositoryId, {}],
+        success: function (data, d) {
+          console.log(convertToConfig(data));
+          return { boardConfig: convertToConfig(data) };
+        },
       }
     ];
     if (Utils.isLoggedIn()) {
@@ -138,7 +169,6 @@ var Board = React.createClass({
 
   afterLoadingSuccess: function (data) {
     data.allIssues = data.openIssues.slice();
-    console.log(data.allIssues);
     Array.prototype.push.apply(data.allIssues, data.closedIssues);
     data.labelsByName = {};
     for (var i in data.labels) {
@@ -153,15 +183,16 @@ var Board = React.createClass({
       onImmediateChange: this.updateView
     });
     this.processIssues(data.allIssues);
-    this.setState({ refreshing: false });
+    this.setState({ refreshing: false, boardConfig: data.boardConfig });
     return data;
   },
 
   processIssues: function (issues) {
     for (var i in issues) {
       var issue = issues[i];
-      issue.timeSpent = this.issueManager.getMinutes(this.issueManager.getTime(issue, 'spent'));
-      issue.timeEstimate = this.issueManager.getMinutes(this.issueManager.getTime(issue, 'estimate'));
+      issue.timeSpent = this.issueManager.getMinutes(this.issueManager.getTime(issue, 'spent')) || 0;
+      issue.timeEstimate = this.issueManager.getMinutes(this.issueManager.getTime(issue, 'estimate')) || 0;
+      issue.timeRemaining = this.issueManager.getMinutes(this.issueManager.getTime(issue, 'remaining'));
     }
   },
 
@@ -228,20 +259,13 @@ var Board = React.createClass({
     return categories;
   },
 
-  renderTimeEstimate: function (className, estimate) {
-    if (estimate)
-      return (<span className={className}>{this.issueManager.formatMinutes(estimate)}</span>);
-    return null;
-  },
-
   render: function () {
     var data = this.state.data;
     var categorizedIssues = this.categorizeIssues(data.allIssues, this.state.draggedIssue, this.state.dropZone);
-    var issueItems = {};
     var times = {};
 
 
-    var totalTimes = { estimate: 0, spent: 0 };
+    var totalTimes = { estimate: 0, spent: 0, remaining: 0 };
 
     var categoryData = this.issueManager.issueCategories;
     for (var category in categorizedIssues) {
@@ -259,27 +283,15 @@ var Board = React.createClass({
           times[category].spent += issue.timeSpent;
           totalTimes.spent += issue.timeSpent;
         }
+        if (issue.timeRemaining) {
+          totalTimes.remaining += issue.timeRemaining;
+         } else {
+            totalTimes.remaining -= issue.timeSpent || 0;         
+            totalTimes.remaining += issue.timeEstimate || 0;         
+         }
+
       }
-      issueItems[category] = issues.sort(function (issueA, issueB) { return (new Date(issueA.created_at)) - (new Date(issueB.created_at)); }).map(function (issue) {
-        return <IssueItem data={this.props.data}
-          key={issue.number}
-          issue={issue}
-          baseUrl={this.props.baseUrl}
-          params={this.props.params}
-          showDetails={this.props.params.issueId && this.props.params.issueId == issue.number ? true : false}
-          collaborators={data.collaborators}
-          issueManager={this.issueManager}
-          milestones={data.milestones}
-          dragStart={this.dragStart}
-          dragged={issue.id == (this.state.draggedIssue && this.state.draggedIssue.id == issue.id ? true : false)}
-          dragEnd={this.dragEnd} />;
-      }.bind(this));
-      if (!issueItems[category].length)
-        issueItems[category] = <div className="panel panel-default">
-          <div className="panel-body">
-            <i>No issues found.</i>
-          </div>
-        </div>
+      issues.sort(function (issueA, issueB) { return (new Date(issueA.created_at)) - (new Date(issueB.created_at)); });
     }
 
     var due;
@@ -305,19 +317,27 @@ var Board = React.createClass({
       event.preventDefault();
     }.bind(this);
 
+
+
+
     var issueLists = Object.keys(this.issueManager.issueCategories).map(function (category) {
       return <IssueList key={category}
         addIssue={addIssue.bind(this, category)}
         dragEnd={this.dragEnd.bind(this, category)}
         dragEnter={this.dragEnter.bind(this, category)}
-        name={category}
-        active={this.state.dropZone == category ? true : false}>
-        <h4>{this.issueManager.issueCategories[category].title}</h4>
-        <p className="estimates">
-          {this.renderTimeEstimate("time-estimate", times[category].estimate)}
-          {this.renderTimeEstimate("time-spent", times[category].spent)}
-          &nbsp;</p>
-        {issueItems[category]}
+        title={this.issueManager.issueCategories[category].title}
+        active={this.state.dropZone == category ? true : false}
+        issues={categorizedIssues[category]}
+        
+        collaborators={data.collaborators}
+        issueManager={this.issueManager}
+        milestones={data.milestones}
+        dragStart={this.dragStart}
+        draggedIssue={this.state.draggedIssue}
+        dragEnd={this.dragEnd}
+        boardConfig={this.state.boardConfig}
+  
+        >
       </IssueList>
     }.bind(this))
 
@@ -336,12 +356,12 @@ var Board = React.createClass({
                       <a href={data.milestone.html_url} target="_blank">{data.milestone.title}</a>
             <a onClick={reload} href="#" className="pull-right refresh-link" title="refresh issues"><i className={"fa fa-refresh" + (this.state.refreshing ? ' fa-spin' : '')} /></a>
           </h3>
-          <p>
+          <div>
             {due}
-            &nbsp;
-                        {this.renderTimeEstimate("time-estimate", totalTimes.estimate)}
-            {this.renderTimeEstimate("time-spent", totalTimes.spent)}
-          </p>
+
+            <RemainingIssueProgressTracker timeEstimate={totalTimes.estimate} timeSpent={totalTimes.spent}
+              timeRemaining={totalTimes.remaining} showRemaining={this.state.boardConfig.timeTracking.remaining.include} />
+          </div>
           {milestoneDescription}
         </div>
       </div>

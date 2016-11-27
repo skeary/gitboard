@@ -6,6 +6,7 @@
 /*global React, Router*/
 
 const React = require('react');
+import { Link } from 'react-router';
 
 const Utils = require('../../utils');
 
@@ -41,7 +42,7 @@ var Tabs = React.createClass({
         classNames.push("disabled");
       }
       return <li key={tab.name} className={classNames.join(" ")} data-tab-name={tab.name}>
-        <A href={href} onClick={onClick}>{tab.title}</A>
+        <Link to={href} onClick={onClick}>{tab.title}</Link>
       </li>;
     }.bind(this));
 

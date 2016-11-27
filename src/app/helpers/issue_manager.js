@@ -120,6 +120,8 @@ IssueManager.prototype.getTime = function (issue, type) {
     var re;
     if (type == 'estimate')
       re = /^time-estimate-([\d\w]+)$/i;
+    else if (type == 'remaining')
+      re = /^time-remaining-([\d\w]+)$/i;
     else
       re = /^time-spent-([\d\w]+)$/i;
     var res = re.exec(label.name);
@@ -137,16 +139,21 @@ IssueManager.prototype.setTime = function (issue, time, type) {
     if (type == 'estimate') {
       if (/^time-estimate-/i.exec(label.name))
         labels[label.name] = false;
-    } else {
+    } else if (type == 'spent') {
       if (/^time-spent-/i.exec(label.name))
+        labels[label.name] = false;
+    } else {
+      if (/^time-remaining-/i.exec(label.name))
         labels[label.name] = false;
     }
   }
   if (time) {
     if (type == 'estimate')
       labels['time-estimate-' + time] = true;
-    else
+    else if (type == 'spent')
       labels['time-spent-' + time] = true;
+    else
+      labels['time-remaining-' + time] = true;
   }
 
   var labelOps = this._setLabelsImmediately(issue, labels);

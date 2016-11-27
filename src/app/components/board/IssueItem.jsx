@@ -10,6 +10,8 @@ const IssueManager = require('../../helpers/issue_manager');
 
 const IssueFooter = require('./IssueFooter');
 const IssueDetails = require('./IssueDetails');
+const RemainingIssueProgressTracker = require('./RemainingIssueProgressTracker');
+
 
 var IssueItem = React.createClass({
 
@@ -19,7 +21,6 @@ var IssueItem = React.createClass({
   },
 
   closeModal: function (e) {
-    Utils.redirectTo(Utils.makeUrl(this.props.baseUrl, {}, this.props.params, ['issueId']));
     this.refs.issueDetails.close();
     this.setState({ showDetails: false });
   },
@@ -112,7 +113,7 @@ var IssueItem = React.createClass({
             issueManager={this.props.issueManager}
             collaborators={this.props.collaborators}
             milestones={this.props.milestones}
-            data={this.props.data} />
+            showRemaining={this.props.showRemaining} />
         </div>
         <div className="modal-footer">
           <IssueFooter issue={issue} data={this.props.data} />
@@ -136,8 +137,9 @@ var IssueItem = React.createClass({
           <h5>{issue.title}</h5>
         </div>
         <div className="panel-footer">
-          {this.renderTimeEstimate(issue)} {this.renderTimeSpent(issue)}&nbsp;
-          </div>
+          <RemainingIssueProgressTracker timeEstimate={issue.timeEstimate} timeSpent={issue.timeSpent} timeRemaining={issue.timeRemaining}
+            showRemaining={this.props.showRemaining} />
+        </div>
       </a>
     </div>;
   }

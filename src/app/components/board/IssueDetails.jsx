@@ -30,6 +30,18 @@ var IssueDetails = React.createClass({
     return [];
   },
 
+  renderRemainingDropdown: function(issue) {
+    if (!this.props.showRemaining) {
+      return null;
+    }
+    return (
+      <TimeSelector type="remaining" label="Rem."
+        issue={issue}
+        issueManager={this.props.issueManager}
+        onClick={this.props.onContentChange} />
+    );
+  },
+
   render: function () {
     var issue = this.props.issue;
     var markdown = <p>(no description given)</p>;
@@ -39,19 +51,20 @@ var IssueDetails = React.createClass({
       assignee = [<img width="32" height="32" src={issue.assignee.avatar_url + '&s=32'} />, <span className="label">{issue.assignee.login}</span>];
     var selectors;
     if (Utils.isLoggedIn() || true) {
-      selectors = <div className="btn-group btn-group">
+      selectors = <div className="btn-group btn-group-raised">
         <AssigneeSelector issue={issue}
           onClick={this.props.onContentChange}
           issueManager={this.props.issueManager}
           collaborators={this.props.collaborators} />
-        <TimeSelector type="estimate"
+        <TimeSelector type="estimate" label="Est."
           issueManager={this.props.issueManager}
           issue={issue}
           onClick={this.props.onContentChange} />
-        <TimeSelector type="spent"
+        <TimeSelector type="spent" label="Spent"
           issue={issue}
           issueManager={this.props.issueManager}
           onClick={this.props.onContentChange} />
+        {this.renderRemainingDropdown(issue)}
         <CategorySelector issue={issue}
           issueManager={this.props.issueManager}
           onClick={this.props.onContentChange} />

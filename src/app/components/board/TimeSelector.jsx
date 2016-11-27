@@ -36,11 +36,11 @@ var TimeSelector = React.createClass({
 
     timeLinks.push(<MenuItem divider key="divider" />);
     timeLinks.push(<MenuItem href="#" key="remove" onClick={setTime.bind(this, undefined)}> <i className="fa fa-trash" />&nbsp;&nbsp;remove time</MenuItem>);
-    var minutes = this.props.issue["time" + (this.props.type == 'estimate' ? 'Estimate' : 'Spent')];
+    var minutes = this.props.issue[`time${this.props.type.charAt(0).toUpperCase()}${this.props.type.slice(1)}`];
     var minutesStr = 'n/a';
     if (minutes)
       minutesStr = this.props.issueManager.formatMinutes(minutes)
-    var title = <span key="main-title" className={"time-" + this.props.type}>{minutesStr}</span>
+    var title = <span key="main-title">{this.props.label} {minutesStr}</span>
 
     return <Dropdown disabled={!Utils.isLoggedIn()} onClick={this.props.onClick} title={title}>
       {timeLinks}
