@@ -28,16 +28,17 @@ div.estimates span.label {
     letter-spacing: 1px;
 }
 
-div.estimates span.label.label-danger {
-    background-color: white;
+div.estimates span.label.label-danger,
+div.issue-list div.panel.issue-item .panel-footer .label.label-danger {
     color: #f44336;
-
+    background: none;
 }
 
-div.estimates span.label.label-success {
-    background-color: white;
-    color: #4caf50;
 
+div.estimates span.label.label-success,
+div.issue-list div.panel.issue-item .panel-footer .label.label-success {
+    color: #4caf50;
+    background: none;
 }
 
 div.estimates span.label .material-icons {
@@ -50,6 +51,30 @@ img.github-ribbon{
     bottom: 0;
     right: 0;
     border: 0;
+}
+
+
+div.issue-list div.panel.issue-item .panel-footer .dropdown {
+    margin-left: 0;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    button {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+div.issue-list div.panel.issue-item .panel-footer .label {
+    font-size: 100%;
+    float: right;
+    margin-right: 0;
+    margin-top: 0;
+}
+
+
+div.issue-list div.panel.issue-item .panel-footer .label i {
+    vertical-align: middle;
 }
 
 @media(min-width:992px){

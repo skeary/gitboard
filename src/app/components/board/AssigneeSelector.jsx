@@ -7,8 +7,6 @@ import { MenuItem } from 'react-bootstrap';
 var AssigneeSelector = React.createClass({
 
   render: function () {
-    console.log('In AssigneeSelector');
-    console.log(this.props);
     var assignTo = function (collaborator, event) {
       event.preventDefault();
       this.props.issueManager.assignTo(this.props.issue, collaborator);

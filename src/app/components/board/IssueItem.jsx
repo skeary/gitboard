@@ -12,6 +12,11 @@ const IssueFooter = require('./IssueFooter');
 const IssueDetails = require('./IssueDetails');
 const RemainingIssueProgressTracker = require('./RemainingIssueProgressTracker');
 
+const TimeSelector = require('./TimeSelector');
+const CategorySelector = require('./CategorySelector');
+const MilestoneSelector = require('./MilestoneSelector');
+const AssigneeSelector = require('./AssigneeSelector');
+const TimeBalanceDisplay = require('./TimeBalanceDisplay');
 
 var IssueItem = React.createClass({
 
@@ -80,6 +85,17 @@ var IssueItem = React.createClass({
     return false;
   },
 
+  renderRemainingDropdown: function(issue) {
+    if (!this.props.showRemaining) {
+      return null;
+    }
+    return (
+      <TimeSelector type="remaining" label="Rem."
+        issue={issue}
+        issueManager={this.props.issueManager}
+        onClick={this.props.onContentChange} />
+    );
+  },
 
 
   render: function () {
@@ -90,13 +106,16 @@ var IssueItem = React.createClass({
 
     var modal;
 
+    console.log(issue.title + ' showDetails ' + this.state.showDetails);
+
     if (this.state.showDetails) {
       var resize = function (e) {
+        console.log('In Resize');
         var maxHeight = $(window).height();
         var element = $('.modal-body');
         element.css({
           overflow: 'auto',
-          height: Math.min(maxHeight - 100, element[0].scrollHeight + 0) + 'px'
+          height: Math.min(maxHeight - 100, element.scrollHeight) + 'px'
         });
       }.bind(this)
       modal = <Modal
@@ -126,7 +145,6 @@ var IssueItem = React.createClass({
       onDragEnd={this.onDragEnd}
       draggable={true}>
       {modal}
-      <a href="#" onClick={this.showIssueDetails}>
         <div className="panel-heading">
           {issue.labels.filter(label => !this.isSpecialLabel(label.name)).map(
             label => <span key={label.name} className="issue-label" style={{ borderBottom: '3px solid ' + '#' + label.color }}>{label.name}</span>
@@ -134,13 +152,23 @@ var IssueItem = React.createClass({
           <p className="right-symbols"><span className="assignee">{assigneeInfo}</span></p>
         </div>
         <div className="panel-body">
-          <h5>{issue.title}</h5>
+          <h5><a target="_blank" href={issue.html_url}>#{issue.number} {issue.title}</a></h5>
         </div>
-        <div className="panel-footer">
-          <RemainingIssueProgressTracker timeEstimate={issue.timeEstimate} timeSpent={issue.timeSpent} timeRemaining={issue.timeRemaining}
-            showRemaining={this.props.showRemaining} />
-        </div>
-      </a>
+      <div className="panel-footer">
+        <TimeSelector type="estimate" label="Est."
+          issueManager={this.props.issueManager}
+          issue={issue} />
+        <TimeSelector type="spent" label="Spent"
+          issue={issue}
+          issueManager={this.props.issueManager}
+          onClick={this.props.onContentChange} />
+        {this.renderRemainingDropdown(issue)}
+
+        <TimeBalanceDisplay timeEstimate={issue.timeEstimate}
+          timeRemaining={issue.timeRemaining}
+          timeSpent={issue.timeSpent}
+          showRemaining={this.props.showRemaining} />
+      </div>
     </div>;
   }
 });
