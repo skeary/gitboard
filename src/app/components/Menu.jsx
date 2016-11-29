@@ -86,28 +86,32 @@ var Menu = React.createClass({
     var flashMessagesMenu = <FlashMessagesMenu baseUrl={this.props.baseUrl} params={this.props.params} />;
     flashMessagesMenu = undefined;  /* quick switch to activate or deactivate */
 
-    var menu;
     if (Utils.isLoggedIn()) {
-      menu = [<ul className="nav navbar-nav">
-        <li><Link to="/repositories">Your Repositories</Link></li>
-        <li><Link to="/organizations">Your Organizations</Link></li>
-      </ul>,
-      <ul className="nav navbar-nav navbar-right">
-        {projectMenu}
-        <li><Link to="/logout">Logout</Link></li>
-      </ul>];
+      return (
+        <div ref="navMain" id="nav-main" className="nav-collapse">
+          <ul className="nav navbar-nav">
+            <li><Link to="/">Your Repositories</Link></li>
+            <li><Link to="/organizations">Your Organizations</Link></li>
+          </ul>
+          <ul className="nav navbar-nav navbar-right">
+            {projectMenu}
+            <li><Link to="/logout">Logout</Link></li>
+          </ul>
+        </div>
+      );
     }
     else {
-      menu = [<ul key="item1" className="nav navbar-nav">
-      </ul>,
-      <ul key="item2" className="nav navbar-nav navbar-right">
-        <li><Link to="/login">Login</Link></li>
-        {flashMessagesMenu}
-      </ul>];
+      return (
+        <div ref="navMain" id="nav-main" className="nav-collapse">
+          <ul key="item1" className="nav navbar-nav">
+          </ul>
+          <ul key="item2" className="nav navbar-nav navbar-right">
+            <li><Link to="/login">Login</Link></li>
+            {flashMessagesMenu}
+          </ul>
+        </div>
+      );
     }
-    return <div ref="navMain" id="nav-main" className="nav-collapse">
-      {menu}
-    </div>;
   }
 });
 

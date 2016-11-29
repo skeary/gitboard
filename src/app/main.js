@@ -21,16 +21,21 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const $ = require('jquery');
 
-const MainApp = require('./components/app');
+const MainApp = require('./components/App');
 const Settings = require('./settings');
 const Utils = require('./utils');
+
+const Layout = require('./components/Layout');
+
+
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
 
 const Login = require('./components/user/login');
 const Logout = require('./components/user/logout');
 
-const Repositories = require('./components/repositories');
+const Organizations = require('./components/Organizations');
+const Repositories = require('./components/Repositories');
 const Milestones = require('./components/milestones');
 const Sprintboard = require('./components/board/sprintboard');
 
@@ -47,15 +52,16 @@ function requireAuth(nextState, replace) {
 
 ReactDOM.render((
   <Router history={browserHistory}>
-    <Route path="/" component={MainApp} onEnter={requireAuth}>
+    <Route path="/" component={Layout} onEnter={requireAuth}>
       <IndexRoute component={Repositories} />
       <Route path="logout" component={Logout} />
+      <Route path="organizations" component={Organizations} />
       <Route path="milestones/:repositoryOwner/:repositoryName" component={Milestones} />
       <Route path="sprintboard/:repositoryOwner/:repositoryName/:milestoneId" component={Sprintboard} />
     </Route>
     <Route path="/login" component={Login} />
     <Route path="/login/:loginType" component={Login} />    
   </Router>
-), document.getElementById('app'));
+), document.getElementById('layout'));
 
 

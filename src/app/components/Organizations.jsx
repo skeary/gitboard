@@ -28,7 +28,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 const React = require('react');
 const $ = require('jquery');
 
-const Utils = require('../utils');
+import { Link } from 'react-router';
+
 const LoaderMixin = require('./mixins/loader');
 const GithubErrorHandlerMixin = require('./mixins/github_error_handler');
 
@@ -36,7 +37,6 @@ const GithubErrorHandlerMixin = require('./mixins/github_error_handler');
 var OrganizationItem = React.createClass({
 
   render: function () {
-    console.log(this.props.organization);
     var description;
     if (this.props.organization.description)
       description = <p>{this.props.organization.description}</p>;
@@ -44,12 +44,12 @@ var OrganizationItem = React.createClass({
       description = <p>no description available</p>;
     return <div className="col-md-3"><div className="panel panel-primary organization-item">
       <img className="avatar" width="64" height="64" src={this.props.organization.avatar_url + '&s=64'} />
-      <A href={Utils.makeUrl("/repositories/" + this.props.organization.login)}>
+      <Link to={`/repositories/${this.props.organization.login}`}>
         <div className="panel-body">
           <h4>{this.props.organization.login}</h4>
           {description}
         </div>
-      </A>
+      </Link>
     </div></div>;
   }
 });

@@ -30,18 +30,12 @@ const ReactDOM = require('react-dom');
 const $ = require('jquery');
 
 const Utils = require('../utils');
-const Header = require('./header');
-const Menu = require('./menu');
 
-var MainApp = React.createClass({
+var App = React.createClass({
 
   displayName: 'MainApp',
 
   componentDidMount: function () {
-
-    if (Utils.isLoggedIn()) {
-      $(".navbar-brand").attr("href", "#/repositories");
-    }
 
     var bodyIsTool = $("body").hasClass("app");
     if (!bodyIsTool)
@@ -58,4 +52,4 @@ var MainApp = React.createClass({
   }
 });
 
-module.exports = MainApp;
+module.exports = App;

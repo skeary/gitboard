@@ -52,9 +52,9 @@ var RequestIndicator = React.createClass({
 
   render: function () {
     if (this.props.connectionError == true)
-      return <p className="request-indicator"><A href="" onClick={this.hideMessage}><span className="fa fa-exclamation-triangle" /> Connection problem!</A></p>;
+      return <p className="request-indicator"><a href="" onClick={this.hideMessage}><span className="fa fa-exclamation-triangle" /> Connection problem!</a></p>;
     if (this.props.activeRequestCount > 0 && !this.state.hidden) {
-      return <p className="request-indicator"><A href="" onClick={this.hideMessage}><span className="fa fa-spin fa-refresh" /> syncing...</A></p>;
+      return <p className="request-indicator"><a href="" onClick={this.hideMessage}><span className="fa fa-spin fa-refresh" /> syncing...</a></p>;
     }
     else
       return <span />;
