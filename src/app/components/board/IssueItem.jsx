@@ -147,12 +147,12 @@ var IssueItem = React.createClass({
       {modal}
         <div className="panel-heading">
           {issue.labels.filter(label => !this.isSpecialLabel(label.name)).map(
-            label => <span key={label.name} className="issue-label" style={{ borderBottom: '3px solid ' + '#' + label.color }}>{label.name}</span>
+            label => <span key={label.name} className="issue-label" style={{ backgroundColor: '#' + label.color }}>{label.name}</span>
           )}
           <p className="right-symbols"><span className="assignee">{assigneeInfo}</span></p>
         </div>
         <div className="panel-body">
-          <h5><a target="_blank" href={issue.html_url}>#{issue.number} {issue.title}</a></h5>
+          <a target="_blank" href={issue.html_url}>#{issue.number} {issue.title}</a>
         </div>
       <div className="panel-footer">
         <TimeSelector type="estimate" label="Est."
