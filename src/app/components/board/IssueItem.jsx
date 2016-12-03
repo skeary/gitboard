@@ -106,8 +106,6 @@ var IssueItem = React.createClass({
 
     var modal;
 
-    console.log(issue.title + ' showDetails ' + this.state.showDetails);
-
     if (this.state.showDetails) {
       var resize = function (e) {
         console.log('In Resize');

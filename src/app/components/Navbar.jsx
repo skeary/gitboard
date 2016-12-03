@@ -6,7 +6,6 @@ const Menu = require('./Menu');
 
 var Navbar = React.createClass({
   render: function () {
-    console.log('In Navbar');
     return (
       <nav className="navbar navbar-default navbar-static-top navbar-gitboard" role="navigation">
         <div className="container">

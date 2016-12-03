@@ -29,6 +29,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 const React = require('react');
 const $ = require('jquery');
 const Moment = require('moment');
+
 import { Link } from 'react-router';
 
 const Utils = require('../../utils');
@@ -130,7 +131,6 @@ var Board = React.createClass({
         endpoint: this.apis.boardConfig.getBoardConfig,
         params: [repositoryId, {}],
         success: function (data, d) {
-          console.log(convertToConfig(data));
           return { boardConfig: convertToConfig(data) };
         },
       }
@@ -184,6 +184,25 @@ var Board = React.createClass({
     });
     this.processIssues(data.allIssues);
     this.setState({ refreshing: false, boardConfig: data.boardConfig });
+
+    data.objectives = [];
+    for (const issue of data.allIssues) {
+      const result = /objective #(\d+)/i.exec(issue.body);
+      const objectiveId = result ? parseInt(result[1]) : null;
+      if (objectiveId) {
+        let objective = data.objectives.find(r => r.objectiveId === objectiveId);
+        if (!objective) {
+          objective = {
+            objectiveId,
+            tasks: [],
+            issue: data.allIssues.find(r => r.number === objectiveId)
+          };
+          data.objectives.push(objective);
+        }
+        objective.tasks.push(issue);
+      }
+    }
+
     return data;
   },
 
@@ -259,13 +278,13 @@ var Board = React.createClass({
     return categories;
   },
 
-  render: function () {
+  renderObjective: function (objective, index) {
     var data = this.state.data;
-    var categorizedIssues = this.categorizeIssues(data.allIssues, this.state.draggedIssue, this.state.dropZone);
+    var categorizedIssues = this.categorizeIssues(objective.tasks, this.state.draggedIssue, this.state.dropZone);
     var times = {};
 
 
-    var totalTimes = { estimate: 0, spent: 0, remaining: 0 };
+    //var totalTimes = { estimate: 0, spent: 0, remaining: 0 };
 
     var categoryData = this.issueManager.issueCategories;
     for (var category in categorizedIssues) {
@@ -277,25 +296,62 @@ var Board = React.createClass({
           continue;
         if (issue.timeEstimate) {
           times[category].estimate += issue.timeEstimate;
-          totalTimes.estimate += issue.timeEstimate;
+          //totalTimes.estimate += issue.timeEstimate;
         }
         if (issue.timeSpent) {
           times[category].spent += issue.timeSpent;
-          totalTimes.spent += issue.timeSpent;
+          //totalTimes.spent += issue.timeSpent;
         }
         if (issue.timeRemaining) {
-          totalTimes.remaining += issue.timeRemaining;
+          //totalTimes.remaining += issue.timeRemaining;
          } else {
-            totalTimes.remaining -= issue.timeSpent || 0;         
-            totalTimes.remaining += issue.timeEstimate || 0;         
+            //totalTimes.remaining -= issue.timeSpent || 0;
+            //totalTimes.remaining += issue.timeEstimate || 0;
          }
 
       }
       issues.sort(function (issueA, issueB) { return (new Date(issueA.created_at)) - (new Date(issueB.created_at)); });
     }
 
+    var addIssue = function (category, event) {
+      event.preventDefault();
+    }.bind(this);
+
+    var issueLists = Object.keys(this.issueManager.issueCategories).map(function (category) {
+      return <IssueList key={category}
+        addIssue={addIssue.bind(this, category)}
+        dragEnter={this.dragEnter.bind(this, category)}
+        title={this.issueManager.issueCategories[category].title}
+        active={this.state.dropZone == category ? true : false}
+        issues={categorizedIssues[category]}
+
+        collaborators={data.collaborators}
+        issueManager={this.issueManager}
+        milestones={data.milestones}
+        dragStart={this.dragStart}
+        draggedIssue={this.state.draggedIssue}
+        dragEnd={this.dragEnd}
+        boardConfig={this.state.boardConfig}
+
+        >
+      </IssueList>
+    }.bind(this))
+
+    return (
+      <div className="objective row" key={index}>
+        <div className="col-md-12">
+          <h4>{objective.issue.title}</h4>
+          <div>{objective.issue.body}</div>
+          <hr />
+        </div>
+        {issueLists}
+      </div>
+    );
+  },
+  render: function() {
+    const { data } = this.state;
+
     var due;
-    var milestoneTitle;
     var milestoneDescription;
     if (data.milestone) {
       if (data.milestone.due_on !== null) {
@@ -312,63 +368,34 @@ var Board = React.createClass({
 
     }
 
-
-    var addIssue = function (category, event) {
-      event.preventDefault();
-    }.bind(this);
-
-
-
-
-    var issueLists = Object.keys(this.issueManager.issueCategories).map(function (category) {
-      return <IssueList key={category}
-        addIssue={addIssue.bind(this, category)}
-        dragEnd={this.dragEnd.bind(this, category)}
-        dragEnter={this.dragEnter.bind(this, category)}
-        title={this.issueManager.issueCategories[category].title}
-        active={this.state.dropZone == category ? true : false}
-        issues={categorizedIssues[category]}
-        
-        collaborators={data.collaborators}
-        issueManager={this.issueManager}
-        milestones={data.milestones}
-        dragStart={this.dragStart}
-        draggedIssue={this.state.draggedIssue}
-        dragEnd={this.dragEnd}
-        boardConfig={this.state.boardConfig}
-  
-        >
-      </IssueList>
-    }.bind(this))
-
-    var reload = function (e) {
+    const reload = function (e) {
       e.preventDefault();
       this.setState({ refreshing: true });
       this.reloadResources();
     }.bind(this);
 
     const repositoryId = `${this.props.params.repositoryOwner}/${this.props.params.repositoryName}`;
-    return <div className="container sprintboard">
-      <div className="row">
-        <div className="col-md-12">
-          <h3><Link to={'/milestones/' + repositoryId}>{data.repository.name}</Link>
-            /
-                      <a href={data.milestone.html_url} target="_blank">{data.milestone.title}</a>
-            <a onClick={reload} href="#" className="pull-right refresh-link" title="refresh issues"><i className={"fa fa-refresh" + (this.state.refreshing ? ' fa-spin' : '')} /></a>
-          </h3>
-          <div>
-            {due}
+    return (
+      <div className="container sprintboard">
+        <div className="row">
+          <div className="col-md-12">
+            <h3><Link to={'/milestones/' + repositoryId}>{data.repository.name}</Link>
+              /
+                        <a href={data.milestone.html_url} target="_blank">{data.milestone.title}</a>
+              <a onClick={reload} href="#" className="pull-right refresh-link" title="refresh issues"><i className={"fa fa-refresh" + (this.state.refreshing ? ' fa-spin' : '')} /></a>
+            </h3>
+            <div>
+              {due}
 
-            <RemainingIssueProgressTracker timeEstimate={totalTimes.estimate} timeSpent={totalTimes.spent}
-              timeRemaining={totalTimes.remaining} showRemaining={this.state.boardConfig.timeTracking.remaining.include} />
+              {/*<RemainingIssueProgressTracker timeEstimate={totalTimes.estimate} timeSpent={totalTimes.spent}
+                timeRemaining={totalTimes.remaining} showRemaining={this.state.boardConfig.timeTracking.remaining.include} />*/}
+            </div>
+            {milestoneDescription}
           </div>
-          {milestoneDescription}
         </div>
+        {data.objectives.map(this.renderObjective)}
       </div>
-      <div className="row">
-        {issueLists}
-      </div>
-    </div>;
+    );
   }
 });
 
